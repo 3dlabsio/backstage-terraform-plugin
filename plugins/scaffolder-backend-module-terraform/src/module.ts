@@ -15,7 +15,7 @@
  */
 import {
     createBackendModule,
-    coreServices,
+    coreServices
   } from '@backstage/backend-plugin-api';
   import { ScmIntegrations } from '@backstage/integration';
   import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
@@ -25,39 +25,46 @@ import {
     createTerraformRunAction,
     createTerraformVariablesAction,
   } from './actions';
-  
-  
+
   /**
    * @public
    * The Terraform Module for the Scaffolder Backend
    */
-  export const azureModule = createBackendModule({
+  export const terraformModule = createBackendModule({
     moduleId: 'terraform',
     pluginId: 'scaffolder',
+
     register({ registerInit }) {
       registerInit({
         deps: {
           scaffolderActions: scaffolderActionsExtensionPoint,
-          config: coreServices.config,
+          config: coreServices.rootConfig,
+          logger: coreServices.logger,
+          discovery: coreServices.discovery,
+          httpRouter: coreServices.httpRouter,
+          identity: coreServices.identity,
+          tokenManager: coreServices.tokenManager,
+          auth: coreServices.auth,
+          httpAuth: coreServices.httpAuth,
         },
-        async init({ scaffolderActions, config }) {
+        async init({ scaffolderActions, config, discovery}) {
           const integrations = ScmIntegrations.fromConfig(config);
           scaffolderActions.addActions(
             createTerraformProjectAction({
-                integrations,
-                config,
+              configApi: config,
+              discoveryApi: discovery,
             }),
             createTerraformWorkspaceAction({
-                integrations,
-                config,
+              configApi: config,
+              discoveryApi: discovery,
             }),
             createTerraformRunAction({
-                integrations,
-                config,
+              configApi: config,
+              discoveryApi: discovery,
             }),
             createTerraformVariablesAction({
-                integrations,
-                config,
+              configApi: config,
+              discoveryApi: discovery,
             }),
           );
         },
