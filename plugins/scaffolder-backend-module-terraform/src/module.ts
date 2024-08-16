@@ -59,14 +59,6 @@ import {
                 integrations,
                 config,
             }),
-            authenticateToVaultWithGitHubAction({
-                integrations,
-                config,
-            }),
-            getTerraformTokenFromVaultAction({
-                integrations,
-                config,
-            }),
           );
         },
       });
