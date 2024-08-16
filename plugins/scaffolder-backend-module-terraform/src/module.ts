@@ -38,7 +38,7 @@ import {
       registerInit({
         deps: {
           scaffolderActions: scaffolderActionsExtensionPoint,
-          config: coreServices.rootConfig,
+          config: coreServices.config,
         },
         async init({ scaffolderActions, config }) {
           const integrations = ScmIntegrations.fromConfig(config);
