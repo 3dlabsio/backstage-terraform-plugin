@@ -4,3 +4,4 @@
  */
 
 export * from './actions';
+export { terraformModule as default } from './module';
