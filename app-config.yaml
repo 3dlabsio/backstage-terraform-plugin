@@ -57,6 +57,7 @@ proxy:
       Authorization: Bearer ${TF_TOKEN}
       Accept: 'application/vnd.api+json'
     allowedHeaders: ['Authorization']
+    credentials: dangerously-allow-unauthenticated
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
@@ -112,3 +113,9 @@ catalog:
     #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
     #   rules:
     #     - allow: [User, Group]
+
+    # Terraform workspace vend example
+    - type: file
+      target: ../../examples/terraform/template.yaml
+      rules:
+        - allow: [Template]

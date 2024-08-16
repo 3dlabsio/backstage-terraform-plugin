@@ -1,0 +1,76 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: terraform-template
+  title: Example Terraform Template for Platform Teams
+  description: An example template for the scaffolder that creates infrastructure with Terraform
+spec:
+  owner: user:guest
+  type: service
+
+  # These parameters are used to generate the input form in the frontend, and are
+  # used to gather input data for the execution of the template.
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - description
+        - organization
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the component
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        description:
+          title: Description
+          type: string
+          description: A description for the component
+        organization:
+          title: Organization
+          type: string
+          description: The name of an existing Terraform organization
+
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          organization: ${{ parameters.organization }}
+          project: ${{ parameters.project }}
+          secondHello: ${{ parameters.secondHello }}
+
+    - id: terraform-workspace
+      name: Create Terraform Workspace
+      action: terraform:workspace:create
+      input:
+        token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
+        organization: ${{ parameters.organization }}
+        #project: ${{ steps['terraform-project'].output.name }}
+        project: 'testproject'
+        name: ${{ parameters.name }}
+        vcsSourceProvider: 'github'
+        vcsOwner: 'shane.warner@gmail.com'
+        vcsRepo: 'https://github.com/repo/myrepo'
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Terraform Workspace
+        url: ${{ steps['terraform-workspace'].output.url }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
