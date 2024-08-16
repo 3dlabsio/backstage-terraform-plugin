@@ -46,10 +46,17 @@ integrations:
 proxy:
   ### Example for how to add a proxy endpoint for the frontend.
   ### A typical reason to do this is to handle HTTPS and CORS for internal services.
-  # endpoints:
-  #   '/test':
-  #     target: 'https://example.com'
-  #     changeOrigin: true
+  '/terraform':
+    target: https://app.terraform.io
+    headers:
+      ### If you have Vault, you can limit
+      ### this TF_TOKEN to read-only access
+      ### to the organization so frontend
+      ### components can pull information
+      ### about Terraform Cloud runs.
+      Authorization: Bearer ${TF_TOKEN}
+      Accept: 'application/vnd.api+json'
+    allowedHeaders: ['Authorization']
 
 # Reference documentation http://backstage.io/docs/features/techdocs/configuration
 # Note: After experimenting with basic setup, use CI/CD to generate docs
@@ -70,7 +77,9 @@ auth:
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
-
+  terraform:
+    baseUrl: https://app.terraform.io
+    
 catalog:
   import:
     entityFilename: catalog-info.yaml
