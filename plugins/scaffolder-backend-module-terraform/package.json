@@ -1,5 +1,5 @@
 {
-  "name": "@internal/plugin-scaffolder-terraform-backend",
+  "name": "@internal/plugin-scaffolder-backend-module-terraform",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
