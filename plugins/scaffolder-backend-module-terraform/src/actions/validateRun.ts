@@ -1,6 +1,17 @@
-/**
- * Copyright (c) HashiCorp, Inc.
- * SPDX-License-Identifier: MPL-2.0
+/*
+ * Copyright 2024 Dun & Bradstreet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
@@ -38,7 +49,7 @@ export const createTerraformValidateRunAction = (options: {
       const { runID, token } = ctx.input;
     
       const terraformApi = new TerraformClient(options, token);
-      const pollInterval = 5000; // Poll every 5 seconds
+      const pollInterval = 30; // Poll interval
       const targetStatus = 'applied'; // Target status to check for
     
       let run;
@@ -52,7 +63,7 @@ export const createTerraformValidateRunAction = (options: {
           break; // Exit the loop once the target status is reached
         }
     
-        ctx.logger.info(`Run status is ${run.data.attributes.status}. Polling again in 5 seconds...`);
+        ctx.logger.info(`Run status is ${run.data.attributes.status}. Polling again in 30 seconds...`);
     
         // Inline sleep logic
         await new Promise(resolve => setTimeout(resolve, pollInterval));
