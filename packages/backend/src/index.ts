@@ -47,6 +47,10 @@ backend.add(import('@backstage/plugin-search-backend-module-pg/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
+//// warners@dnb.com
+// Github module
+backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
+
 // Terraform module
 backend.add(import('@internal/plugin-scaffolder-backend-module-terraform'));
 
