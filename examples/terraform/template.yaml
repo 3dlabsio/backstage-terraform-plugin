@@ -112,6 +112,7 @@ spec:
       input:
         token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
         workspaceID: ${{ steps['terraform-workspace'].output.id }}
+        autoApply: true
 
     - id: register
       name: Register

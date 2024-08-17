@@ -212,13 +212,14 @@ export class TerraformClient implements TerraformApi {
     return response.json();
   }
 
-  async createRun(workspaceID: string, message: string, token?: string): Promise<Run> {
+  async createRun(workspaceID: string, message: string, autoApply: boolean, token?: string): Promise<Run> {
     const { apiUrl } = await this.getUrls();
 
     const runRequest: RunRequest = {
       data: {
         attributes: {
           message: message,
+          'auto-apply': autoApply
         },
         type: 'runs',
         relationships: {

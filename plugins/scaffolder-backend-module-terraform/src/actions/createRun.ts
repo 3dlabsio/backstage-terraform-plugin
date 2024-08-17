@@ -31,17 +31,22 @@ export const createTerraformRunAction = (options: {
             title: 'Terraform Token',
             description: 'Terraform token',
           },
+          autoApply: {
+            type: 'boolean',
+            title: 'Auto Apply',
+            description: 'Apply changes automatically',
+          }
         },
       },
     },
     async handler(ctx) {
-      const { workspaceID, token } = ctx.input;
+      const { workspaceID, token, autoApply } = ctx.input;
 
       const message = 'Started by Backstage scaffolder task';
 
       const terraformApi = new TerraformClient(options, token);
 
-      const run = await terraformApi.createRun(workspaceID, message);
+      const run = await terraformApi.createRun(workspaceID, message, autoApply);
 
       ctx.logger.info(`Started run with id ${run.data.id}`);
       ctx.output('id', run.data.id);
