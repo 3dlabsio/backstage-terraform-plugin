@@ -7,3 +7,4 @@ export { createTerraformProjectAction } from './createProject';
 export { createTerraformWorkspaceAction } from './createWorkspace';
 export { createTerraformRunAction } from './createRun';
 export { createTerraformVariablesAction } from './createVariables';
+export { createTerraformValidateRunAction} from './validateRun';

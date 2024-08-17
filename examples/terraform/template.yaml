@@ -114,6 +114,13 @@ spec:
         workspaceID: ${{ steps['terraform-workspace'].output.id }}
         autoApply: true
 
+    - id: terraform-validate-run
+      name: Validate Terraform Run
+      action: terraform:run:validate
+      input:
+        token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
+        runID: ${{ steps['terraform-run'].output.id }}
+
     - id: register
       name: Register
       action: catalog:register

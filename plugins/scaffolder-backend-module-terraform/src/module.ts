@@ -24,6 +24,7 @@ import {
     createTerraformWorkspaceAction,
     createTerraformRunAction,
     createTerraformVariablesAction,
+    createTerraformValidateRunAction,
   } from './actions';
 
   /**
@@ -63,6 +64,10 @@ import {
               discoveryApi: discovery,
             }),
             createTerraformVariablesAction({
+              configApi: config,
+              discoveryApi: discovery,
+            }),
+            createTerraformValidateRunAction({
               configApi: config,
               discoveryApi: discovery,
             }),

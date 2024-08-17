@@ -19,6 +19,7 @@ export interface TerraformApi {
     workspace: WorkspaceRequest,
   ): Promise<Workspace>;
   createRun(workspaceID: string, message: string, autoApply: boolean): Promise<Run>;
+  getRunStatus(runID: string): Promise<Run>;
 }
 
 export interface Run {

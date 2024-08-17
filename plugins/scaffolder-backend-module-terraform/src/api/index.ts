@@ -247,4 +247,22 @@ export class TerraformClient implements TerraformApi {
 
     return response.json();
   }
+
+  async getRunStatus(runID: string, token?: string): Promise<Run> {
+    const { apiUrl } = await this.getUrls();
+  
+    const response = await fetch(`${apiUrl}/runs/${runID}`, {
+      method: 'GET',
+      headers: this.headers,
+    });
+
+
+    if (!response.ok) {
+      throw new Error(
+        `failed to create run, status ${response.status}: ${response.statusText}`
+      );
+    }
+    
+    return response.json(); // Return if the target status is found
+  }
 }
