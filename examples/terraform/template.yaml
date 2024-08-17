@@ -115,18 +115,19 @@ spec:
         autoApply: true
 
     - id: terraform-validate-run
-      name: Validate Terraform Run
+      name: Terraform Apply
       action: terraform:run:validate
       input:
         token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
         runID: ${{ steps['terraform-run'].output.id }}
 
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+    # Register doesn't really apply to an infrastructure workspace
+    #- id: register
+    #  name: Register
+    #  action: catalog:register
+    #  input:
+    #    repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+    #    catalogInfoPath: '/catalog-info.yaml'
 
   output:
     links:
