@@ -20,6 +20,9 @@ spec:
         - name
         - description
         - organization
+        - project
+        - repoUrl
+        - variable
       properties:
         name:
           title: Name
@@ -36,6 +39,18 @@ spec:
           title: Organization
           type: string
           description: The name of an existing Terraform organization
+        project:
+          title: Project
+          type: string
+          description: The name of a new Terraform project you want to create
+        repoUrl:
+          title: Repository
+          type: string
+          description: The URL of the GitHub repository (github.com?owner=<org>&repo=<repo_name(drn-1234)>)
+        variable:
+          title: Workspace Variable
+          type: string
+          description: A workspace variable value to define
 
   # These steps are executed in the scaffolder backend, using data that we gathered
   # via the parameters above.
@@ -52,6 +67,15 @@ spec:
           project: ${{ parameters.project }}
           secondHello: ${{ parameters.secondHello }}
 
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        token: '${{ GITHUB_TOKEN }}'
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+
     - id: terraform-workspace
       name: Create Terraform Workspace
       action: terraform:workspace:create
@@ -59,11 +83,42 @@ spec:
         token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
         organization: ${{ parameters.organization }}
         #project: ${{ steps['terraform-project'].output.name }}
-        project: 'testproject'
+        project: ${{ parameters.project }}
         name: ${{ parameters.name }}
         vcsSourceProvider: 'github'
-        vcsOwner: 'shane.warner@gmail.com'
-        vcsRepo: 'https://github.com/repo/myrepo'
+        vcsOwner: ${{ (parameters.repoUrl | parseRepoUrl).owner }}
+        vcsRepo: ${{ (parameters.repoUrl | parseRepoUrl).repo }}
+
+    - id: terraform-variables
+      name: Create Terraform Variables
+      action: terraform:variables:create
+      input:
+        token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
+        workspaceID: ${{ steps['terraform-workspace'].output.id }}
+        variables:
+          - key: second_hello
+            value: ${{ parameters.variable }}
+            description: 'A variable created and populated by Backstage'
+            category: terraform
+          - key: secret_key
+            value: 'some-secret-key-from-output-on-another-step'
+            description: 'An example of a sensitive variable passed to Terraform'
+            category: terraform
+            sensitive: true
+
+    - id: terraform-run
+      name: Create Terraform Run
+      action: terraform:run:create
+      input:
+        token: '${{ secrets.TERRAFORM_CLOUD_TOKEN }}'
+        workspaceID: ${{ steps['terraform-workspace'].output.id }}
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
 
   output:
     links:
